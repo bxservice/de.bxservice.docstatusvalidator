@@ -22,8 +22,7 @@
  * Contributors:                                                       *
  * - Diego Ruiz - BX Service GmbH                                      *
  **********************************************************************/
-
-package de.bxservice.model;
+package de.bxservice.model.docstatusvalidator;
 
 import java.util.List;
 
@@ -34,6 +33,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Table_ScriptValidator;
+import org.compiere.util.Util;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -54,22 +54,23 @@ public class DocumentStatusValidator extends AbstractEventHandler {
 		List<MTable> docStatusTables = MBXSDocValidation.getDocumentStatusTables();
 
 		for (MTable table : docStatusTables) {
-			registerTableEvent(IEventTopics.DOC_BEFORE_PREPARE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_VOID, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_CLOSE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_REACTIVATE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_REVERSECORRECT, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_REVERSEACCRUAL, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_COMPLETE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_PREPARE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_COMPLETE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_VOID, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_CLOSE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_REACTIVATE, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_REVERSECORRECT, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_REVERSEACCRUAL, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_BEFORE_POST, table.getTableName());
-			registerTableEvent(IEventTopics.DOC_AFTER_POST, table.getTableName());
+			String tableName = table.getTableName();
+			registerTableEvent(IEventTopics.DOC_BEFORE_PREPARE, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_VOID, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_CLOSE, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_REACTIVATE, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_REVERSECORRECT, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_REVERSEACCRUAL, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_COMPLETE, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_PREPARE, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_COMPLETE, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_VOID, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_CLOSE, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_REACTIVATE, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_REVERSECORRECT, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_REVERSEACCRUAL, tableName);
+			registerTableEvent(IEventTopics.DOC_BEFORE_POST, tableName);
+			registerTableEvent(IEventTopics.DOC_AFTER_POST, tableName);
 		}
 	} //initialize
 
@@ -80,11 +81,15 @@ public class DocumentStatusValidator extends AbstractEventHandler {
 		
 		List<MBXSDocValidation> docValidators = MBXSDocValidation.getDocumentValidator(po.get_Table_ID(), po.getAD_Client_ID(), getEventValidator(type));
 		
+		StringBuilder errorMessage = new StringBuilder();
 		for (MBXSDocValidation docValidator : docValidators) {
 			if (docValidator.isRaiseAlert(po)) {
-				throw new AdempiereException(docValidator.get_Translation("Description"));
+				errorMessage.append("<br>"  + docValidator.get_Translation("Message"));
 			}
 		}
+		
+		if (!Util.isEmpty(errorMessage.toString(), true))
+			throw new AdempiereException(errorMessage.toString());
 		
 	} //doHandleEvent
 

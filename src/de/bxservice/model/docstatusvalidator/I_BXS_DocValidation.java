@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package de.bxservice.model;
+package de.bxservice.model.docstatusvalidator;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -113,19 +113,6 @@ public interface I_BXS_DocValidation
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name EventModelValidator */
     public static final String COLUMNNAME_EventModelValidator = "EventModelValidator";
 
@@ -147,6 +134,19 @@ public interface I_BXS_DocValidation
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Message */
+    public static final String COLUMNNAME_Message = "Message";
+
+	/** Set Message.
+	  * EMail Message
+	  */
+	public void setMessage (String Message);
+
+	/** Get Message.
+	  * EMail Message
+	  */
+	public String getMessage();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

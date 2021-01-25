@@ -22,8 +22,7 @@
  * Contributors:                                                       *
  * - Diego Ruiz - BX Service GmbH                                      *
  **********************************************************************/
-
-package de.bxservice.model;
+package de.bxservice.model.docstatusvalidator;
 
 import java.sql.ResultSet;
 

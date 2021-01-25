@@ -15,7 +15,7 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package de.bxservice.model;
+package de.bxservice.model.docstatusvalidator;
 
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -31,7 +31,7 @@ public class X_BXS_DocValidation extends PO implements I_BXS_DocValidation, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210122L;
+	private static final long serialVersionUID = 20210125L;
 
     /** Standard Constructor */
     public X_BXS_DocValidation (Properties ctx, int BXS_DocValidation_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_BXS_DocValidation extends PO implements I_BXS_DocValidation, I_Pe
         {
 			setAD_Table_ID (0);
 			setBXS_DocValidation_ID (0);
-			setDescription (null);
 			setEventModelValidator (null);
+			setMessage (null);
 			setName (null);
 			setWhereClause (null);
         } */
@@ -138,23 +138,6 @@ public class X_BXS_DocValidation extends PO implements I_BXS_DocValidation, I_Pe
 		return (String)get_Value(COLUMNNAME_BXS_DocValidation_UU);
 	}
 
-	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_Description);
-	}
-
 	/** EventModelValidator AD_Reference_ID=53237 */
 	public static final int EVENTMODELVALIDATOR_AD_Reference_ID=53237;
 	/** Table Before New = TBN */
@@ -220,6 +203,23 @@ public class X_BXS_DocValidation extends PO implements I_BXS_DocValidation, I_Pe
 	public String getEventModelValidator () 
 	{
 		return (String)get_Value(COLUMNNAME_EventModelValidator);
+	}
+
+	/** Set Message.
+		@param Message 
+		EMail Message
+	  */
+	public void setMessage (String Message)
+	{
+		set_Value (COLUMNNAME_Message, Message);
+	}
+
+	/** Get Message.
+		@return EMail Message
+	  */
+	public String getMessage () 
+	{
+		return (String)get_Value(COLUMNNAME_Message);
 	}
 
 	/** Set Name.

@@ -22,7 +22,7 @@
  * Contributors:                                                       *
  * - Diego Ruiz - BX Service GmbH                                      *
  **********************************************************************/
-package de.bxservice.model;
+package de.bxservice.model.docstatusvalidator;
 
 import java.sql.ResultSet;
 import java.util.List;
@@ -31,6 +31,7 @@ import java.util.Properties;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -40,7 +41,8 @@ public class MBXSDocValidation extends X_BXS_DocValidation {
 	 * 
 	 */
 	private static final long serialVersionUID = 4801859772142134002L;
-	
+	private static final CCache<String, List<MBXSDocValidation>> s_DocValitorCache = new CCache<>(null, "MBXSDocValidation", 30, 120, false, 2000);
+
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getSeqNo() == 0) {
@@ -60,20 +62,26 @@ public class MBXSDocValidation extends X_BXS_DocValidation {
 		super(ctx, BXS_DocValidation_ID, trxName);
 	}
 	
-	public static List<MBXSDocValidation> getDocumentValidator(int AD_Table_ID, int AD_Client_ID, String EventValidator) {
+	public static List<MBXSDocValidation> getDocumentValidator(int AD_Table_ID, int AD_Client_ID, String eventValidator) {
+		String key = AD_Table_ID + "|" + AD_Client_ID + "|" + eventValidator;  
+		List<MBXSDocValidation> cache = s_DocValitorCache.get(key);
+		if (cache != null)
+			return cache;
+		
 		final String whereClause = "AD_Client_ID IN (0,?) AND AD_Table_ID = ? AND EventModelValidator=?";
 		List <MBXSDocValidation> documentValidators = new Query(Env.getCtx(), Table_Name, whereClause, null)
-				.setParameters(AD_Client_ID, AD_Table_ID, EventValidator)
+				.setParameters(AD_Client_ID, AD_Table_ID, eventValidator)
 				.setOnlyActiveRecords(true)
 				.setOrderBy("SeqNo")
 				.list();
 		
+		s_DocValitorCache.put(key, documentValidators);
 		return documentValidators;
 	}
 
 	public static List<MTable> getDocumentStatusTables() {
 		final String whereClause = 
-				"IsView = 'N' AND isActive='Y' AND EXISTS (SELECT * FROM ad_column ac WHERE ac.columnname = 'DocStatus' AND ac.ad_table_id=AD_Table.ad_table_id)";
+				"IsView = 'N' AND EXISTS (SELECT * FROM ad_column ac WHERE ac.columnname = 'DocStatus' AND ac.ad_table_id=AD_Table.ad_table_id AND ac.IsActive='Y')";
 		List <MTable> documentValidators = new Query(Env.getCtx(), MTable.Table_Name, whereClause, null)
 				.setOnlyActiveRecords(true)
 				.list();
@@ -86,7 +94,7 @@ public class MBXSDocValidation extends X_BXS_DocValidation {
 				+ " AND " + po.get_KeyColumns()[0] + " = ?";
 
 		final String sql = "SELECT 1 FROM " + po.get_TableName() + " WHERE " + whereClause;
-		return DB.getSQLValueEx(get_TrxName(), sql, po.get_ID()) > 0;
+		return DB.getSQLValueEx(po.get_TrxName(), sql, po.get_ID()) > 0;
 	}
 
 }
