@@ -90,7 +90,7 @@ public class MBXSDocValidation extends X_BXS_DocValidation {
 	}
 	
 	public boolean isRaiseAlert(PO po) {
-		final String whereClause = Env.parseContext(Env.getCtx(), -1, getWhereClause(), false, true) 
+		final String whereClause = Env.parseVariable(getWhereClause(), po, null,  false) 
 				+ " AND " + po.get_KeyColumns()[0] + " = ?";
 
 		final String sql = "SELECT 1 FROM " + po.get_TableName() + " WHERE " + whereClause;
