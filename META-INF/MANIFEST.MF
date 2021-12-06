@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BXS_DocStatusValidator
 Bundle-SymbolicName: de.bxservice.docstatusvalidator
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Automatic-Module-Name: de.bxservice.docstatusvalidator
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
