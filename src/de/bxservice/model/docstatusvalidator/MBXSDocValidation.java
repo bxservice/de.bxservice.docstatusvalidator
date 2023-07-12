@@ -90,11 +90,14 @@ public class MBXSDocValidation extends X_BXS_DocValidation {
 	}
 	
 	public boolean isRaiseAlert(PO po) {
-		final String whereClause = Env.parseVariable(getWhereClause(), po, null,  false) 
-				+ " AND " + po.get_KeyColumns()[0] + " = ?";
-
-		final String sql = "SELECT 1 FROM " + po.get_TableName() + " WHERE " + whereClause;
-		return DB.getSQLValueEx(po.get_TrxName(), sql, po.get_ID()) > 0;
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM ")
+				.append(po.get_TableName())
+				.append(" WHERE (")
+				.append(Env.parseVariable(getWhereClause(), po, null,  false))
+				.append(") AND ")
+				.append(po.get_KeyColumns()[0])
+				.append("=?");
+		return DB.getSQLValueEx(po.get_TrxName(), sql.toString(), po.get_ID()) > 0;
 	}
 
 }
