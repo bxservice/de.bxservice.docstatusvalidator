@@ -30,8 +30,11 @@ import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Table_ScriptValidator;
 import org.compiere.util.Util;
 import org.osgi.service.component.annotations.Component;
@@ -50,6 +53,16 @@ public class DocumentStatusValidator extends AbstractEventHandler {
 
 	@Override
 	protected void initialize() {
+		if (!Adempiere.isStarted()) {
+			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
+				@Override
+				public void stateChange(ServerStateChangeEvent event) {
+					if (event.getEventType() == ServerStateChangeEvent.SERVER_START && Adempiere.isStarted())
+							initialize();
+				}
+			});
+			return;
+		}
 
 		List<MTable> docStatusTables = MBXSDocValidation.getDocumentStatusTables();
 
