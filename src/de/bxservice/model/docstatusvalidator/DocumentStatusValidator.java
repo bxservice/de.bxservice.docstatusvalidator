@@ -97,7 +97,9 @@ public class DocumentStatusValidator extends AbstractEventHandler {
 		StringBuilder errorMessage = new StringBuilder();
 		for (MBXSDocValidation docValidator : docValidators) {
 			if (docValidator.isRaiseAlert(po)) {
-				errorMessage.append("<br>"  + docValidator.get_Translation("Message"));
+				if (errorMessage.length() > 0)
+					errorMessage.append("<br>");
+				errorMessage.append(docValidator.get_Translation("Message"));
 			}
 		}
 		
